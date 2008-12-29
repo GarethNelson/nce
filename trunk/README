@@ -1,0 +1,17 @@
+GCE: Gareth's Crossplatform Environment
+standard app compilation:
+  app_main(int argc, char **argv) entrypoint
+  
+hosting platform:
+  GNU/Linux with SCons, Python and mingw32
+targeted platforms:
+  GNU/Linux
+  Windows 98 through to vista
+  *BSD?
+single executable packages:
+  NSIS .exe on win32
+  shellscript on *nix systems?
+unified APIs:
+  OpenGL for graphics
+  OpenAL for sound?
+  Python scripting
