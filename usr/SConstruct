@@ -1,0 +1,43 @@
+import os
+from config import *
+
+build_win32_stuff = (int(ARGUMENTS.get('win32', build_win32))==1)
+build_linux_stuff = (int(ARGUMENTS.get('linux', build_linux))==1)
+AddOption('--title',dest='title',type='string')
+app_title         = GetOption('title')
+app_srcdir        = ARGUMENTS.get('srcdir','src/')
+app_main          = ARGUMENTS.get('main','hello')
+
+from config import *
+
+win32_env = Environment()
+win32_env.Append(CFLAGS   ='-DWIN32 -DAPP_TITLE="\\"%s\\""' % (app_title,))
+win32_env.Append(LINKFLAGS='-B static')
+
+win32_env.Replace(CC = win32_prefix + 'gcc')
+win32_env.Replace(PROGSUFFIX = '.exe')
+
+win32_env.Append(ENV = {'PATH': ':'.join(('/'.join((crosstools,'bin')),os.environ['PATH']))})
+win32_env.Append(CPPPATH = ['src/','vendor_inc/win32/','/'.join((crosstools,'include')),'build/win32/',app_srcdir])
+win32_env.Append(LIBPATH=  ['vendor_libs/win32/',app_srcdir])
+
+linux_env = Environment()
+linux_env.Append(CFLAGS='-DLINUX -DAPP_TITLE="\\"%s\\""' %(app_title,))
+linux_env.Append(CPPPATH=['src/','vendor_inc/linux/',app_srcdir])
+linux_env.Append(LIBPATH=['src/','vendor_libs/linux/',app_srcdir])
+
+def build_bin(teh_env,platform_name,platform_libs=['GL','GLU','glut']):
+    suffix = ''
+    if platform_name == 'win32': suffix='.exe'
+    return teh_env.Program('build/%s/%s%s' %(platform_name,app_main,suffix),source=['src/main.c','%s/%s.c' % (app_srcdir,app_main)],LIBS=platform_libs)
+
+if build_win32_stuff:
+   exe_bin  = build_bin(win32_env,'win32',['opengl32','glaux','glu32','glut32','python25'])
+   py_dll   = win32_env.Command('build/win32/python25.dll', 'vendor_libs/win32/python25.dll', Copy('$TARGET', '$SOURCE'))
+   glut_dll = win32_env.Command('build/win32/glut32.dll', 'vendor_libs/win32/glut32.dll', Copy('$TARGET','$SOURCE'))
+   Depends(exe_bin, glut_dll)
+   win32_env.Zip('build/win32_out.zip','build/win32/%s.exe' % (app_main,))
+   win32_env.Zip('build/win32_out.zip','build/win32/glut32.dll')
+
+if build_linux_stuff:
+   build_bin(linux_env,'linux',['glut','GLU','GL','Xmu','Xext','X11','m','pthread','python2.4'])

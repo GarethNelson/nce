@@ -1,0 +1,54 @@
+#!/bin/env python
+usage = """
+Usage: gce PATH NAME [options]
+Compiles the application in PATH with the main filename set to NAME
+Places results in PATH/build/
+
+Options:
+ --title="My application"
+    Sets the title of the application to "My Application"
+
+example:
+  gce  ~/hello/ hello --title="Hello world!"
+  will produce ~/hello/build/win32/hello.exe and ~/hello/build/linux/hello
+"""
+import sys
+import os
+if len(sys.argv)<3:
+   print usage
+   sys.exit(1)
+
+app_title = 'My GCE Application'
+if len(sys.argv)>3:
+   for option in sys.argv[3:]:
+       print option
+       if option.startswith('--title='):
+          app_title = option.split('--title=')[1]
+
+src_dir  = os.path.abspath(sys.argv[1])
+src_main = sys.argv[2]
+
+curdir = os.getcwd()
+os.chdir('/opt/gce/')
+try:
+   os.mkdir(os.path.join(src_dir,'build'))
+except OSError,e:
+   pass
+try:
+   os.mkdir(os.path.join(src_dir,'build','win32'))
+except OSError,e:
+   pass
+try:
+   os.mkdir(os.path.join(src_dir,'build','linux'))
+except OSError,e:
+   pass
+
+os.system('./scons.py win32=1 --title="%s" srcdir="%s" main="%s"' % (app_title,src_dir,src_main))
+
+os.system('./scons.py linux=1 --title="%s" srcdir="%s" main="%s"' % (app_title,src_dir,src_main))
+
+os.system('cp /opt/gce/build/linux/%s %s' % (src_main,os.path.join(src_dir,'build/linux')))
+os.system('cp /opt/gce/build/win32/%s.exe %s' % (src_main,os.path.join(src_dir,'build/win32')))
+os.system('cp /opt/gce/build/win32/glut32.dll ' + os.path.join(src_dir,'build/win32'))
+os.system('cp /opt/gce/build/win32/python25.dll ' + os.path.join(src_dir,'build/win32'))
+os.chdir(curdir)
