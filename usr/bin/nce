@@ -1,6 +1,6 @@
 #!/bin/env python
 usage = """
-Usage: gce PATH NAME [options]
+Usage: nce PATH NAME [options]
 Compiles the application in PATH with the main filename set to NAME
 Places results in PATH/build/
 
@@ -9,7 +9,7 @@ Options:
     Sets the title of the application to "My Application"
 
 example:
-  gce  ~/hello/ hello --title="Hello world!"
+  nce  ~/hello/ hello --title="Hello world!"
   will produce ~/hello/build/win32/hello.exe and ~/hello/build/linux/hello
 """
 import sys
@@ -18,7 +18,7 @@ if len(sys.argv)<3:
    print usage
    sys.exit(1)
 
-app_title = 'My GCE Application'
+app_title = 'My NCE Application'
 if len(sys.argv)>3:
    for option in sys.argv[3:]:
        print option
@@ -29,7 +29,7 @@ src_dir  = os.path.abspath(sys.argv[1])
 src_main = sys.argv[2]
 
 curdir = os.getcwd()
-os.chdir('/opt/gce/')
+os.chdir('/opt/nce/')
 try:
    os.mkdir(os.path.join(src_dir,'build'))
 except OSError,e:
