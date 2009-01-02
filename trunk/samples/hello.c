@@ -1,4 +1,4 @@
-#include <gce.h>
+#include <nce.h>
 
 void redraw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -17,9 +17,9 @@ int app_main(int argc, char ** argv) {
     printf("hello.c speaking here!\n");
     
     printf("i'm going to create a new window and draw a triangle!\n");
-    gce_app_redraw = &redraw;
-    gce_enable_glut(1024,768);
+    nce_app_redraw = &redraw;
+    nce_enable_glut(1024,768);
     printf("GLUT enabled, entering loop...\n");
-    gce_glut_loop();
+    nce_glut_loop();
     return 0;
 }

@@ -1,5 +1,5 @@
-#ifndef __GCE_H_
-#define __GCE_H_
+#ifndef __NCE_H_
+#define __NCE_H_
 
 #ifdef WIN32
 #include <windows.h>
@@ -13,23 +13,23 @@
 
 //================== Global variables ===========================
 
-int    gce_argc;
-char **gce_argv;
+int    nce_argc;
+char **nce_argv;
 
 //================== GLUT and OpenGL stuff ======================
 
 // callbacks
-void (*gce_app_redraw)(void);
-void (*gce_app_reshape)(int w,int h);
+void (*nce_app_redraw)(void);
+void (*nce_app_reshape)(int w,int h);
 
 // start the GLUT main loop - will never return, set your callbacks first or start a new thread!
-void gce_glut_loop();
+void nce_glut_loop();
 
 // set redraw callback
 
 // enable/disable the GLUT output window
-void gce_enable_glut(unsigned int w, unsigned int h);
-void gce_disable_glut();
+void nce_enable_glut(unsigned int w, unsigned int h);
+void nce_disable_glut();
 
 
 #endif
